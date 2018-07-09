@@ -20,33 +20,34 @@ namespace MVCTask.Controllers
          return View(vm);
       }
 
-        // GET: User/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
+      // GET: User/Create
+      public ActionResult Create() {
+         EditViewModel vm = new EditViewModel();
+         vm.DeptDropDownLsit = Factory.GenDeptList();
 
-        // GET: User/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
+         return View("Edit", vm);
+      }
 
-        // POST: User/Create
-        [HttpPost]
-        public ActionResult Create(FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add insert logic here
+      // POST: User/Create
+      [HttpPost]
+      public ActionResult Create(EditViewModel vm) {
+         vm.DeptDropDownLsit = Factory.GenDeptList();
+         try {
+            vm.EditUser.update_date = DateTime.Now;
 
-                return RedirectToAction("Index");
+            DataLayerMessage msg = Factory.CreateUser(vm.EditUser);
+
+            if (msg.Vaild) {
+               return RedirectToAction("Index");
             }
-            catch
-            {
-                return View();
+            else {
+               return View(vm);
             }
-        }
+         }
+         catch {
+            return View(vm);
+         }
+      }
 
       // GET: User/Edit/5
       public ActionResult Edit(int id) {
@@ -82,7 +83,7 @@ namespace MVCTask.Controllers
       }
 
         // GET: User/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(int userid)
         {
             return View();
         }
