@@ -1,47 +1,55 @@
 ﻿@model MVCTask.ViewModels.UserViewModel
 @{
-    ViewBag.Title = "Index";
+   ViewBag.Title = "Index";
 }
 
-<a href="/user/Create" class="btn btn-success">Add User</a>
+@using (Html.BeginForm()) {
+   <div class="form-group">
+      <a href="/user/Create" class="btn btn-success">Add User</a>
+      @Html.TextBoxFor(m => m.SearchText, new { @class = "form-control col-md5", @placeholder = "Search User......" })
+      <button class="btn btn-primary" type="submit">Query</button>
+   </div>
+}
 
-<table class="table table-hover">
-   <thead>
-      <tr>
-         <th scope="col">user_id</th>
-         <th scope="col">user_name</th>
-         <th scope="col">dept_name</th>
-         <th scope="col">action</th>
-      </tr>
-   </thead>
-   <tbody>
-      @foreach (var user in Model.userList) {
+<table class="table table-hover" id="userList">
+      <thead>
          <tr>
-            <th>@user.user_id</th>
-            <td>@user.user_name</td>
-            <td>@user.dept.dept_name</td>
-            <td>
-               <a class="btn btn-warning" href="/user/Edit/@user.user_id">Edit</a>
-               <button class="btn btn-danger" onclick="DeleteUser(@user.user_id)">Delete</button>
-            </td>
+            <th scope="col">user_id</th>
+            <th scope="col">user_name</th>
+            <th scope="col">dept_name</th>
+            <th scope="col">update_date</th>
+            <th scope="col">action</th>
          </tr>
-      }
-   </tbody>
-</table>
+      </thead>
+      <tbody>
+         @foreach (var user in Model.userList) {
+            <tr>
+               <th>@user.user_id</th>
+               <td>@user.user_name</td>
+               <td>@user.dept.dept_name</td>
+               <td>@user.update_date.ToShortDateString()</td>
+               <td>
+                  <a class="btn btn-warning" href="/user/Edit/@user.user_id">Edit</a>
+                  <button class="btn btn-danger" onclick="DeleteUser(@user.user_id)">Delete</button>
+               </td>
+            </tr>
+         }
+      </tbody>
+   </table>
 
 <script>
-   function DeleteUser(id)
-   {
+   function DeleteUser(id) {
       var checkDelete = confirm("Are you sure about to delete the user?");
-      
+
       if (checkDelete) {
          $.ajax({
             url: "/user/Delete",
             data: {
-               userid:id
+               userid: id
             },
             success: function (result) {
-               window.location("/user/Index");
+
+               location.reload();
             }
          });
       }

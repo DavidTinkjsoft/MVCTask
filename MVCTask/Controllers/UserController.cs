@@ -5,17 +5,29 @@ using System.Web;
 using System.Web.Mvc;
 using MVCTask.ViewModels;
 using MVCTask.LinkToSQL;
+using System.Web.Caching;
 
 namespace MVCTask.Controllers
 {
-    public class UserController : Controller
-    {
+   public class UserController : Controller
+   {
       private Factory Factory = new Factory();
 
       // GET: User
       public ActionResult Index() {
          UserViewModel vm = new UserViewModel();
          vm.userList = Factory.GetUserList();
+
+         return View(vm);
+      }
+
+      [HttpPost]
+      public ActionResult Index(UserViewModel vm) {
+
+         vm.userList = Factory.GetUserList();
+         if (vm.SearchText != null) {
+            vm.userList = vm.userList.Where(u => u.user_name.Contains(vm.SearchText)).ToList();
+         }
 
          return View(vm);
       }
@@ -82,26 +94,19 @@ namespace MVCTask.Controllers
          }
       }
 
-        // GET: User/Delete/5
-        public ActionResult Delete(int userid)
-        {
-            return View();
-        }
+      // GET: User/Delete/5
+      public DataLayerMessage Delete(int userid) {
+         DataLayerMessage msg = new DataLayerMessage();
+         msg.Vaild = false;
+         try {
+            user editEntry = Factory.GetUser(userid);
 
-        // POST: User/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-    }
+            msg = Factory.DeleteUser(editEntry);
+            return msg;
+         }
+         catch {
+            return msg;
+         }
+      }
+   }
 }

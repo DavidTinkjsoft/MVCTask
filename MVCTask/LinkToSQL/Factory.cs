@@ -62,6 +62,25 @@ namespace MVCTask.LinkToSQL
          return msg;
       }
 
+      public DataLayerMessage DeleteUser(user userEntry) {
+         DataLayerMessage msg = new DataLayerMessage();
+         msg.Vaild = false;
+
+         try {
+            mvcDB.users.Remove(userEntry);
+            msg.Rows = mvcDB.SaveChanges();
+
+            if (msg.Rows == 1) {
+               msg.Vaild = true;
+            }
+         }
+         catch (Exception ex) {
+            msg.ErrorMessage = ex.Message;
+         }
+
+         return msg;
+      }
+
       public List<SelectListItem> GenDeptList() {
          List<SelectListItem> deptList = mvcDB.depts.Select(u => new SelectListItem() {
             Text = u.dept_name,

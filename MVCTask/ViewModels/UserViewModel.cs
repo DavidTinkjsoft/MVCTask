@@ -10,5 +10,6 @@ namespace MVCTask.ViewModels
    {
       public List<user> userList { get; set; }
 
+      public string SearchText { get; set; }
    }
 }
