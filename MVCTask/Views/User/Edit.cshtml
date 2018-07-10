@@ -4,12 +4,12 @@
 }
 
 @using (Html.BeginForm()) {
-
+   <br />
 @Html.HiddenFor(m => m.EditUser.user_id)
 
 @Html.TextBoxFor(m => m.EditUser.user_name, new { @class = "form-control" })
 @Html.DropDownListFor(m => m.EditUser.dept_id, Model.DeptDropDownLsit, new { @class = "form-control" })
 
-   <button class="btn btn-primary" type="submit">Submit</button>
+   <button class="btn btn-primary" type="submit">Save</button>
 }
 
